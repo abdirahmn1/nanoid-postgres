@@ -21,7 +21,7 @@
 
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
-CREATE OR REPLACE FUNCTION nanoid(size int DEFAULT 21, alphabet text DEFAULT '_-0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
+CREATE OR REPLACE FUNCTION nanoid(size int DEFAULT 21, alphabet text DEFAULT '_-0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', identifier text DEFAULT NULL)
     RETURNS text
     LANGUAGE plpgsql
     stable
@@ -47,7 +47,7 @@ BEGIN
                     if alphabetIndex <= length(alphabet) then
                         idBuilder := idBuilder || substr(alphabet, alphabetIndex, 1);
                         if length(idBuilder) = size then
-                            return idBuilder;
+                            return COALESCE(identifier, '') || idBuilder;
                         end if;
                     end if;
                     i = i + 1;
